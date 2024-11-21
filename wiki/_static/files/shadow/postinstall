@@ -1,0 +1,41 @@
+#!/bin/sh
+if [ ! -f /etc/group ] ; then
+echo -e "root:x:0:">/etc/group
+echo -e "users:x:2:">>/etc/group
+echo -e "tty:x:5:">>/etc/group
+echo -e "disk:x:6:">>/etc/group
+echo -e "dialout:x:20:">>/etc/group
+echo -e "cdrom:x:24:">>/etc/group
+echo -e "audio:x:29:">>/etc/group
+echo -e "video:x:44:">>/etc/group
+echo -e "wheel:x:120:">>/etc/group
+echo -e "plugdev:x:121:">>/etc/group
+echo -e "netdev:x:122:">>/etc/group
+echo -e "dip:x:123:">>/etc/group
+
+    chmod 644 /etc/group
+    chown root /etc/group
+    chgrp root /etc/group
+    else
+    chmod 644/etc/group
+    chown root /etc/group
+    chgrp root /etc/group
+fi
+
+if [ ! -f /etc/shadow ] ; then
+    echo "root:*::0:::::" > /etc/shadow
+    chmod 600 /etc/shadow
+    chown root /etc/shadow
+    chgrp root /etc/shadow
+    else
+    chmod 600 /etc/shadow
+    chown root /etc/shadow
+    chgrp root /etc/shadow
+fi
+
+
+if [ ! -f "/etc/passwd" ]; then
+	echo -e "root:x:0:0:root:/root:/bin/sh">/etc/passwd
+fi
+
+

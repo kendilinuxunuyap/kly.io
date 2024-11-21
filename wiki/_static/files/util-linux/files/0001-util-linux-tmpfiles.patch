@@ -1,0 +1,62 @@
+From adba19ec396c891a9024099b61ca37b2afe59a05 Mon Sep 17 00:00:00 2001
+From: artoo <artoo@artixlinux.org>
+Date: Wed, 27 Mar 2024 18:15:15 +0100
+Subject: [PATCH 1/1] util-linux tmpfiles
+
+---
+ misc-utils/meson.build | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/misc-utils/meson.build b/misc-utils/meson.build
+index 847b1012c..50f077658 100644
+--- a/misc-utils/meson.build
++++ b/misc-utils/meson.build
+@@ -76,15 +76,16 @@ test_uuidd_sources = files(
+   'test_uuidd.c',
+ )
+ 
+-if build_liblastlog2 and systemd.found()
+-  lastlog2_tmpfiles = configure_file(
+-    input : 'lastlog2-tmpfiles.conf.in',
+-    output : 'lastlog2-tmpfiles.conf',
+-    configuration : conf)
++
++lastlog2_tmpfiles = configure_file(
++  input : 'lastlog2-tmpfiles.conf.in',
++  output : 'lastlog2-tmpfiles.conf',
++  configuration : conf)
+   install_data(
+     lastlog2_tmpfiles,
+     install_dir : '/usr/lib/tmpfiles.d')
+ 
++if build_liblastlog2 and systemd.found()
+   lastlog2_service = configure_file(
+     input : 'lastlog2-import.service.in',
+     output : 'lastlog2-import.service',
+@@ -94,15 +95,15 @@ if build_liblastlog2 and systemd.found()
+     install_dir : systemdsystemunitdir)
+ endif
+ 
+-if build_uuidd and systemd.found()
+-  uuidd_tmpfiles = configure_file(
+-    input : 'uuidd-tmpfiles.conf.in',
+-    output : 'uuidd-tmpfiles.conf',
+-    configuration : conf)
+-  install_data(
+-    uuidd_tmpfiles,
+-    install_dir : '/usr/lib/tmpfiles.d')
++uuidd_tmpfiles = configure_file(
++  input : 'uuidd-tmpfiles.conf.in',
++  output : 'uuidd-tmpfiles.conf',
++  configuration : conf)
++install_data(
++  uuidd_tmpfiles,
++  install_dir : '/usr/lib/tmpfiles.d')
+ 
++if build_uuidd and systemd.found()
+   uuidd_service = configure_file(
+     input : 'uuidd.service.in',
+     output : 'uuidd.service',
+-- 
+2.44.0
+

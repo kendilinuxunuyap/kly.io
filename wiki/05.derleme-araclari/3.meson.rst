@@ -1,0 +1,34 @@
+meson
++++++
+
+Meson, modern bir yapılandırma betik dili ve Ninja ise hızlı bir derleyici aracıdır. Bir paketi derlemek için öncelikle Meson ile yapılandırma dosyalarını oluşturmanız gerekir. Ardından, Ninja derleyici aracını kullanarak bu yapılandırmayı derleyebilirsiniz.
+
+İlk olarak, projenizin dizinine gidin ve Meson ile yapılandırma dosyalarını oluşturun:
+
+.. code-block:: shell
+
+	meson setup builddir --prefix=/usr
+
+Sonra, oluşturulan builddir dizinine geçin ve Ninja ile derlemeyi başlatın:
+
+.. code-block:: shell
+
+	ninja -C builddir
+
+Bu adımları takip ederek Meson ve Ninja kullanarak paketinizi başarılı bir şekilde derleyebilirsiniz.
+
+
+
+Bu kaynak kod aşağıdaki gibi derlenir:
+
+.. code-block:: shell
+	
+	# paketin yükleneceği konum
+	DESTDIR=/
+	meson setup builddir --prefix=/usr
+	ninja -C builddir
+	DESTDIR=$DESTDIR ninja -C builddir install
+	
+.. raw:: pdf
+
+   PageBreak

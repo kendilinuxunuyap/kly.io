@@ -1,0 +1,5 @@
+sed -i "/nobody/d" /etc/group
+sed -i "/nobody/d" /etc/passwd
+rc-service sshd stop
+rc-update del sshd default
+

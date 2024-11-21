@@ -1,0 +1,6 @@
+#!/bin/sh
+
+udevd --daemon --resolve-names=never #modprobe yerine kullanılıyor
+udevadm trigger --type=subsystems --action=add
+udevadm trigger --type=devices --action=add
+udevadm settle || true

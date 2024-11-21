@@ -1,0 +1,65 @@
+make
+++++
+
+make, yazılım geliştirme süreçlerinde sıkça kullanılan bir araçtır. Özellikle C ve C++ gibi dillerde projelerin derlenmesi ve yönetilmesi için kullanılır.
+
+Aşağıdaki C kodumuzu(merhaba.c dosyası) make ile nasıl derleyeceğimizi anlatalım;
+
+.. code-block:: C
+	
+	#include <stdio.h>
+	int main(){
+	    puts("Merhaba");
+	    return 0;
+	}
+
+
+Makefile Nedir?
+---------------
+
+Makefile, make aracının nasıl çalışacağını belirten bir dosyadır. İçinde hedefler, bağımlılıklar ve komutlar bulunur. Örneğin, bir C programını derlemek için aşağıdaki gibi basit bir Makefile oluşturabilirsiniz. Makefile ve merhaba.c dosyası aynı konumda olmalıdır.
+
+.. code-block:: shell
+
+	CC=gcc
+	CFLAGS=-I.
+
+	all: program
+
+	program: merhaba.o 
+		$(CC) -o program merhaba.o
+
+	merhaba.o: merhaba.c
+		$(CC) -c merhaba.c $(CFLAGS)
+
+	clean:
+		rm -f *.o program
+
+
+merhaba dosyasından **program** adında bir ikili dosya oluşturmak için aşağıdaki komutlar Makefile ve merhaba.c dosyasının olduğu konumda çalıştırılır.
+
+.. code-block:: shell
+
+	make
+	make install
+
+Genellikle Makefile dosyası olmaz. Onun yerine **configure.ac** dosyası olur. **configure.ac** dosyasından **Makefile** dosyası elde etmek için, öncelikle **autoconf** ve **automake** araçlarının sisteminizde kurulu olması gerekmektedir. 
+
+**autoreconf -fvi** komutu çalıştırılıarak configure dosyamızı üretir.Bu araçlar, yapılandırma dosyalarınızı işleyerek gerekli **Makefile** dosyalarını oluşturmanıza yardımcı olur.
+
+
+**configure** komutunun devamında **--prefix** dışında başka parametreleride olabilir. Bu paramatreleri "Read.me" dosyası içerisinde bulunabilir veya **configure --help** komutu kaynak kodların olduğu konumda kullanılarak görülebilir.
+
+
+Bu kaynak kod aşağıdaki gibi derlenir:
+
+.. code-block:: shell
+
+	$ autoreconf -fvi
+	$ ./configure --prefix=/usr
+	$ make
+	$ make install 
+	
+.. raw:: pdf
+
+   PageBreak

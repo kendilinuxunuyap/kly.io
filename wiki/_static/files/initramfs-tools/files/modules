@@ -1,0 +1,21 @@
+### This file is the template for /etc/initramfs-tools/modules.
+### It is not a configuration file itself.
+###
+# List of modules that you want to include in your initramfs.
+# They will be loaded at boot time in the order below.
+#
+# Syntax:  module_name [args ...]
+#
+# You must run update-initramfs(8) to effect this change.
+#
+# Examples:
+#
+# raid1
+# sd_mod
+vfat
+fat
+nls_cp437
+nls_ascii
+nls_utf8
+ext4
+

@@ -1,0 +1,37 @@
+pkgbase = kmod
+	pkgdesc = Linux kernel module management tools and library
+	pkgver = 32
+	pkgrel = 1
+	url = https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git
+	arch = x86_64
+	license = GPL2
+	checkdepends = linux-headers
+	checkdepends = libelf
+	depends = glibc
+	depends = zlib
+	depends = openssl
+	depends = xz
+	depends = zstd
+	provides = module-init-tools=3.16
+	provides = libkmod.so
+	conflicts = module-init-tools
+	replaces = module-init-tools
+	options = strip
+	source = https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-32.tar.xz
+	source = https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-32.tar.sign
+	source = depmod-search.conf
+	source = depmod.hook
+	source = depmod.script
+	validpgpkeys = EAB33C9690013C733916AC839BA2A5A630CBEA53
+	md5sums = 1046fda48766fae905f83150d12eec78
+	md5sums = SKIP
+	md5sums = dd62cbf62bd8f212f51ef8c43bec9a77
+	md5sums = e179ace75721e92b04b2e145b69dab29
+	md5sums = b00253ca0d4ebfb2414e4596597bdebd
+	sha256sums = 630ed0d92275a88cb9a7bf68f5700e911fdadaf02e051cf2e4680ff8480bd492
+	sha256sums = SKIP
+	sha256sums = 1a92bfeae870f61ce814577e69d2a147a9c0caf6aed1131243e4179241fcc4a8
+	sha256sums = c11c2a0f66ea405493e8617689ca10818dc81dd1dddc19bdb220c8b2917119c1
+	sha256sums = d2cd04a09feba30e1376144a8110ec7521892acb0940c3c4ba459aeecf0452ed
+
+pkgname = kmod

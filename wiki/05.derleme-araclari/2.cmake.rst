@@ -1,0 +1,33 @@
+cmake
++++++
+
+CMake, projelerin derlenmesi ve yapılandırılması için kullanılan bir araçtır. Bir paketi CMake ile derlemek için genellikle aşağıdaki adımları izleriz:
+
+    İlk olarak, projenin kök dizininde bir CMakeLists.txt dosyası oluşturun.
+    Ardından, CMake komutunu kullanarak projeyi yapılandırın ve derleyin. Örneğin:
+
+.. code-block:: shell
+
+	mkdir build
+	cd build
+	cmake ..
+	make
+
+    Bu adımları takip ederek, CMake ile paketinizi başarıyla derleyebilirsiniz.
+
+CMake'in esnekliği ve kullanım kolaylığı sayesinde paketlerin derlenmesi ve yapılandırılması oldukça kolay hale gelir.
+
+
+Bu kaynak kod aşağıdaki gibi derlenir:
+
+.. code-block:: shell
+
+	mkdir build
+	cd build
+	cmake ..
+	make
+	make install
+	
+.. raw:: pdf
+
+   PageBreak

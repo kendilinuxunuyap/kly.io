@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# This hook copies busybox binary into the initramfs directory
+# and creates all necessary links to it.
+# It should be placed last into the hooks directory, in order to
+# not overwrite commands which are provided by other means.
+
+set -e
+
+case "${1:-}" in
+  prereqs)  echo ""; exit 0;;
+esac
+[ -r /usr/share/initramfs-tools/hook-functions ] || exit 0
+. /usr/share/initramfs-tools/hook-functions
+
+copy_exec /bin/kur2
+copy_exec /bin/kur
+copy_exec /bin/kuruefi
+copy_exec /bin/live
+copy_exec /bin/udv
+copy_exec /bin/kur-boot-root
+copy_exec /bin/initdisk
+copy_exec /bin/canli
+copy_exec /bin/disk.layout
+copy_exec /sbin/sfdisk /bin/sfdisk
+
+
+
+

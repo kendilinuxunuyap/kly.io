@@ -1,0 +1,14 @@
+Derleme Araçları
+++++++++++++++++
+
+Linux sistemlerinde kodlarımızı derlemek  kullanılan uygulamalara derleme araçları denir. Birden fazla araç olsada  en temel derleme araçları aşağıda görülmektedir.
+
+- make
+- cmake
+- meson
+- python
+
+
+.. raw:: pdf
+
+   PageBreak

@@ -1,0 +1,61 @@
+başlıklar
++++++++++
+
+Türkiyedeki İller
++++++++++++++++++   başlıklar
+
+Türkiyedeki İller
+=================   başlıklar
+
+Türkiyedeki İller
+----------------- başlıklar
+
+Türkiyedeki İller
+................. başlıklar
+
+.. raw:: pdf
+
+   PageBreak
+
+Madddelendirme
+++++++++++++++
+  
+KAlın  **denemem**
+**1. Ordu**
+
+   - **ünye**
+   - ssss
+
+**2. Konya**
+
+- meram
+- selçuklu
+
+3. Niğde
+
+- Bor
+- Çamardı
+
+
+.. raw:: pdf
+
+   PageBreak
+
+Resim Ekleme
+++++++++++++
+
+.. image:: /_static/images/chroot-1.png
+  :width: 400
+
+.. raw:: pdf
+
+   PageBreak
+   
+kod ekleme
+++++++++++
+
+.. code-block:: shell
+
+	sudo chroot /home/user1/wrk #sisteme erişim yapıldı.
+
+

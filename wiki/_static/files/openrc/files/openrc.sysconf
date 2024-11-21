@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ ! -f /var/lib/ymp/sysconf/openrc/postinst.done ] ; then
+    echo "Creating openrc runlevels"
+    for level in boot default nonetwork shutdown sysinit ; do
+        mkdir -p /etc/runlevels/$level
+    done
+    touch /etc/fstab
+    touch /var/lib/ymp/sysconf/openrc/postinst.done
+fi

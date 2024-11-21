@@ -1,0 +1,12 @@
+root:x:0:
+users:x:2:
+tty:x:5:
+disk:x:6:
+dialout:x:20:
+cdrom:x:24:
+audio:x:29:
+video:x:44:
+wheel:x:120:
+plugdev:x:121:
+netdev:x:122:
+dip:x:123:

@@ -1,0 +1,14 @@
+sed -i "/nobody/d" /etc/group
+sed -i "/nobody/d" /etc/passwd
+mkdir -p /var/empty
+chown root:root /var/empty
+chmod 755 /var/empty
+echo "nobody:!:65534:" >> /etc/group
+echo "nobody:!:65534:65534::/var/empty:/usr/sbin/nologin" >> /etc/passwd
+
+
+sed -i "/PermitRootLogin/d" /etc/ssh/sshd_config
+echo -e "\nPermitRootLogin yes">> /etc/ssh/sshd_config
+
+rc-update add sshd default
+rc-service sshd start

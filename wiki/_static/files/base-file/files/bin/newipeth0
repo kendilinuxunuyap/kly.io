@@ -1,0 +1,4 @@
+netdevicex=$(cat /proc/net/dev|grep 'wl\|enp'|cut -d ' ' -f1|head -1|cut -d ':' -f1)
+
+ip link set ${netdevicex} up
+udhcpc -i ${netdevicex} -s /usr/share/udhcpc/udhcpc.sh

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bayramkarahan.gitlab.io/wiki/sitemap.xml
+ 
