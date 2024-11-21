@@ -15,49 +15,47 @@ Derleme
 	source=("https://www.libssh.org/files/0.10/libssh-${version}.tar.xz")
 	group="net.libs"
 	depends="openssl,zlib"
+		
+	# Paketin yükleneceği tasarlanan sistem konumu
+	DESTDIR="$HOME/distro/rootfs"
+	# Derleme konumu
+	ROOTBUILDDIR="/tmp/kly/build"
+	# Derleme yapılan paketin derleme konumun
+	BUILDDIR="/tmp/kly/build/build-${name}-${version}" 
+	# paketin derleme talimatının verildiği konum
+	PACKAGEDIR=$(pwd) 
+	# Paketin kaynak kodlarının olduğu konum
+	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
+
+	# initsetup
+	# derleme dizini yoksa oluşturuluyor
+	mkdir -p  $ROOTBUILDDIR
+	# içeriği temizleniyor
+	rm -rf $ROOTBUILDDIR/* 
+	cd $ROOTBUILDDIR #dizinine geçiyoruz
+	wget ${source}
+	# isimde boşluk varsa silme işlemi yapılıyor
+	for f in *\ *; do mv "$f" "${f// /}"; done 
+	dowloadfile=$(ls|head -1)
+	filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
+	if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+	director=$(find ./* -maxdepth 0 -type d)
+	directorname=$(basename ${director})
+	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
 	
-	display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"	#Detect the name of the display in use
-	user=$(who | grep '('$display')' | awk '{print $1}')	#Detect the user using such display
-	ROOTBUILDDIR="/home/$user/distro/build" # Derleme konumu
-	BUILDDIR="/home/$user/distro/build/build-${name}-${version}" #Derleme yapılan paketin derleme konumun
-	DESTDIR="/home/$user/distro/rootfs" #Paketin yükleneceği sistem konumu
-	PACKAGEDIR=$(pwd) #paketin derleme talimatının verildiği konum
-	SOURCEDIR="/home/$user/distro/build/${name}-${version}" #Paketin kaynak kodlarının olduğu konum
-
-	initsetup(){
-		    mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-		    rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
-		    cd $ROOTBUILDDIR #dizinine geçiyoruz
-            wget ${source}
-            for f in *\ *; do mv "$f" "${f// /}"; done #isimde boşluk varsa silme işlemi yapılıyor
-		    dowloadfile=$(ls|head -1)
-		    filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		    if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
-		    director=$(find ./* -maxdepth 0 -type d)
-		    directorname=$(basename ${director})
-		    if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-		    mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
-	}
-
-	setup() {
-	    cmake -S $SOURCEDIR -B $BUILDDIR -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
-		-DWITH_EXAMPLES=NO -DBUILD_SHARED_LIBS=YES -DBUILD_STATIC_LIB=YES -DWITH_NACL=OFF \
-		-DWITH_GCRYPT=OFF -DWITH_MBEDTLS=OFF -DWITH_GSSAPI=OFF \
-		-DWITH_PCAP=OFF -DWITH_SERVER=ON -DWITH_SFTP=ON -DWITH_ZLIB=ON
-	}
-	build() {
-	    make -C $BUILDDIR
-	}
-	package() {
-	    make -C $BUILDDIR install DESTDIR=$DESTDIR
-	    install $BUILDDIR/src/libssh.a ${DESTDIR}/usr/lib64/
-	    ${DESTDIR}/sbin/ldconfig -r ${DESTDIR}           # sistem guncelleniyor
-	}
-	initsetup       # initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir
-	setup           # setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların ayalanması sağlanır.
-	build           # build fonksiyonu çalışır ve kaynak dosyaları derlenir.
-	package         # package fonksiyonu çalışır, yükleme öncesi ayarlamalar yapılır ve yüklenir.
-
+	# setup
+	cmake -S $SOURCEDIR -B $BUILDDIR -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+	-DWITH_EXAMPLES=NO -DBUILD_SHARED_LIBS=YES -DBUILD_STATIC_LIB=YES -DWITH_NACL=OFF \
+	-DWITH_GCRYPT=OFF -DWITH_MBEDTLS=OFF -DWITH_GSSAPI=OFF \
+	-DWITH_PCAP=OFF -DWITH_SERVER=ON -DWITH_SFTP=ON -DWITH_ZLIB=ON
+	
+	# build
+	make -C $BUILDDIR
+	    
+	# package
+	make -C $BUILDDIR install DESTDIR=$DESTDIR
+	install $BUILDDIR/src/libssh.a ${DESTDIR}/usr/lib64/
 
 Paket adında(libssh) istediğiniz bir konumda bir dizin oluşturun ve dizin içine giriniz. Yukarı verilen script kodlarını build adında bir dosya oluşturup içine kopyalayın ve kaydedin. Daha sonra build scriptini çalıştırın. Nasıl çalıştırılacağı aşağıdaki komutlarla gösterilmiştir. Aşağıda gösterilen komutları paket için oluşturulan dizinin içinde terminal açarak çalıştırınız.
 
@@ -65,7 +63,7 @@ Paket adında(libssh) istediğiniz bir konumda bir dizin oluşturun ve dizin iç
 .. code-block:: shell
 	
 	chmod 755 build
-	sudo ./build
+	fakeroot ./build
   
 .. raw:: pdf
 

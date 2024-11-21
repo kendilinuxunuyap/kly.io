@@ -15,75 +15,75 @@ Derleme
 	source="https://github.com/OpenRC/openrc/archive/refs/tags/$version.zip"
 	depends=""
 	group="sys.apps,pam"
+		
+	# Paketin yükleneceği tasarlanan sistem konumu
+	DESTDIR="$HOME/distro/rootfs"
+	# Derleme konumu
+	ROOTBUILDDIR="/tmp/kly/build"
+	# Derleme yapılan paketin derleme konumun
+	BUILDDIR="/tmp/kly/build/build-${name}-${version}" 
+	# paketin derleme talimatının verildiği konum
+	PACKAGEDIR=$(pwd) 
+	# Paketin kaynak kodlarının olduğu konum
+	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
+
+	# initsetup
+	# derleme dizini yoksa oluşturuluyor
+	mkdir -p  $ROOTBUILDDIR
+	# içeriği temizleniyor
+	rm -rf $ROOTBUILDDIR/* 
+	cd $ROOTBUILDDIR #dizinine geçiyoruz
+	wget ${source}
+	# isimde boşluk varsa silme işlemi yapılıyor
+	for f in *\ *; do mv "$f" "${f// /}"; done 
+	dowloadfile=$(ls|head -1)
+	filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
+	if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+	director=$(find ./* -maxdepth 0 -type d)
+	directorname=$(basename ${director})
+	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
 	
-	display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"	#Detect the name of the display in use
-	user=$(who | grep '('$display')' | awk '{print $1}')	#Detect the user using such display
-	ROOTBUILDDIR="/home/$user/distro/build" # Derleme konumu
-	BUILDDIR="/home/$user/distro/build/build-${name}-${version}" #Derleme yapılan paketin derleme konumun
-	DESTDIR="/home/$user/distro/rootfs" #Paketin yükleneceği sistem konumu
-	PACKAGEDIR=$(pwd) #paketin derleme talimatının verildiği konum
-	SOURCEDIR="/home/$user/distro/build/${name}-${version}" #Paketin kaynak kodlarının olduğu konum
-	initsetup(){
-		    mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-		    rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
-		    cd $ROOTBUILDDIR #dizinine geçiyoruz
-            wget ${source}
-            for f in *\ *; do mv "$f" "${f// /}"; done #isimde boşluk varsa silme işlemi yapılıyor
-		    dowloadfile=$(ls|head -1)
-		    filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		    if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
-		    director=$(find ./* -maxdepth 0 -type d)
-		    directorname=$(basename ${director})
-		    if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-		    mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
-	}
-	setup(){
-
-		cp -prfv $PACKAGEDIR/files $SOURCEDIR/
-		cp -prfv $PACKAGEDIR/extras $SOURCEDIR/
-	    meson setup $BUILDDIR --sysconfdir=/etc --prefix=/ --libdir=/lib64 --includedir=/usr/include \
-		-Ddefault_library=both -Dzsh-completions=true -Dbash-completions=true -Dpam=true -Dselinux=disabled -Dpkgconfig=true
-	}
-	build(){
-	    meson compile -C $BUILDDIR
-	}
-	package(){
-	    export DESTDIR=${DESTDIR}//
-	    DESTDIR="$DESTDIR" meson install --no-rebuild -C $BUILDDIR
-	    rm -f ${DESTDIR}/etc/runlevels/*/*	    # disable all services
-	    rm ${DESTDIR}//etc/init.d/functions.sh
-	    ln -s ../../lib/rc/sh/functions.sh ${DESTDIR}/etc/init.d/functions.sh
-	    mkdir -p ${DESTDIR}/etc/sysconf.d/	    # install sysconf script
-	    install $SOURCEDIR/files/openrc.sysconf ${DESTDIR}/etc/sysconf.d/openrc
-	    mkdir -p ${DESTDIR}/usr ${DESTDIR}/sbin
-	    mv ${DESTDIR}/{,usr}/share	    # move /share to /usr/share
-
-	    install $SOURCEDIR/files/reboot ${DESTDIR}/sbin/reboot	    # reboot and poweroff script
-	    install $SOURCEDIR/files/poweroff ${DESTDIR}/sbin/poweroff
-	    ln -s openrc-shutdown ${DESTDIR}/sbin/shutdown
-	    mkdir -p ${DESTDIR}/usr/libexec
-	    install $SOURCEDIR/extras/disable-secondary-gpu.sh ${DESTDIR}/usr/libexec/disable-secondary-gpu
-	    install $SOURCEDIR/extras/disable-secondary-gpu.initd ${DESTDIR}/etc/init.d
-	    install $SOURCEDIR/extras/backlight-restore.initd ${DESTDIR}/etc/init.d
-	    install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/init.d/0modules
+	# setup
+	cp -prfv $PACKAGEDIR/files $SOURCEDIR/
+	cp -prfv $PACKAGEDIR/extras $SOURCEDIR/
+	meson setup $BUILDDIR --sysconfdir=/etc --prefix=/ --libdir=/lib64 --includedir=/usr/include \
+	-Ddefault_library=both -Dzsh-completions=true -Dbash-completions=true -Dpam=true -Dselinux=disabled -Dpkgconfig=true
+	
+	# build
+	meson compile -C $BUILDDIR
 	    
-	    for level in boot default nonetwork shutdown sysinit ; do
-	    mkdir -p ${DESTDIR}/etc/runlevels/$level
-	    done
-	    touch ${DESTDIR}/etc/fstab
-	    install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/init.d/0modules
-	    install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/runlevels/default/0modules
+	# package
+	export DESTDIR=${DESTDIR}//
+	DESTDIR="$DESTDIR" meson install --no-rebuild -C $BUILDDIR
+	rm -f ${DESTDIR}/etc/runlevels/*/*	    # disable all services
+	rm ${DESTDIR}//etc/init.d/functions.sh
+	ln -s ../../lib/rc/sh/functions.sh ${DESTDIR}/etc/init.d/functions.sh
+	mkdir -p ${DESTDIR}/etc/sysconf.d/	    # install sysconf script
+	install $SOURCEDIR/files/openrc.sysconf ${DESTDIR}/etc/sysconf.d/openrc
+	mkdir -p ${DESTDIR}/usr ${DESTDIR}/sbin
+	mv ${DESTDIR}/{,usr}/share	    # move /share to /usr/share
+
+	install $SOURCEDIR/files/reboot ${DESTDIR}/sbin/reboot	    # reboot and poweroff script
+	install $SOURCEDIR/files/poweroff ${DESTDIR}/sbin/poweroff
+	ln -s openrc-shutdown ${DESTDIR}/sbin/shutdown
+	mkdir -p ${DESTDIR}/usr/libexec
+	install $SOURCEDIR/extras/disable-secondary-gpu.sh ${DESTDIR}/usr/libexec/disable-secondary-gpu
+	install $SOURCEDIR/extras/disable-secondary-gpu.initd ${DESTDIR}/etc/init.d
+	install $SOURCEDIR/extras/backlight-restore.initd ${DESTDIR}/etc/init.d
+	install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/init.d/0modules
+			
+	for level in boot default nonetwork shutdown sysinit ; do
+	mkdir -p ${DESTDIR}/etc/runlevels/$level
+	done
+	touch ${DESTDIR}/etc/fstab
+	install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/init.d/0modules
+	install $SOURCEDIR/files/0modules.init.d ${DESTDIR}/etc/runlevels/default/0modules
 	    
-	    install ${DESTDIR}/etc/init.d/hostname ${DESTDIR}/etc/runlevels/default/hostname
-	    cd ${DESTDIR}/etc/init.d/
-	    ln -s agetty agetty.tty1
-	    install ${DESTDIR}/etc/init.d/agetty.tty1 ${DESTDIR}/etc/runlevels/default/agetty.tty1
-	    ${DESTDIR}/sbin/ldconfig -r ${DESTDIR}           # sistem guncelleniyor
-	}
-	initsetup       # initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir
-	setup           # setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların ayalanması sağlanır.
-	build           # build fonksiyonu çalışır ve kaynak dosyaları derlenir.
-	package         # package fonksiyonu çalışır, yükleme öncesi ayarlamalar yapılır ve yüklenir.
+	install ${DESTDIR}/etc/init.d/hostname ${DESTDIR}/etc/runlevels/default/hostname
+	cd ${DESTDIR}/etc/init.d/
+	ln -s agetty agetty.tty1
+	install ${DESTDIR}/etc/init.d/agetty.tty1 ${DESTDIR}/etc/runlevels/default/agetty.tty1
 
 .. raw:: pdf
 
@@ -101,7 +101,7 @@ Paket adında(openrc) istediğiniz bir konumda bir dizin oluşturun ve dizin iç
 .. code-block:: shell
 	
 	chmod 755 build
-	sudo ./build
+	fakeroot ./build
 
 Çalıştırılması
 --------------

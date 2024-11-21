@@ -16,65 +16,67 @@ Derleme
 	source="https://salsa.debian.org/kernel-team/initramfs-tools/-/archive/v$version/initramfs-tools-v$version.tar.gz"
 	groups="sys.fs"
 	
-	display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"	#Detect the name of the display in use
-	user=$(who | grep '('$display')' | awk '{print $1}')	#Detect the user using such display
-	ROOTBUILDDIR="/home/$user/distro/build" # Derleme konumu
-	BUILDDIR="/home/$user/distro/build/build-${name}-${version}" #Derleme yapılan paketin derleme konumun
-	DESTDIR="/home/$user/distro/rootfs" #Paketin yükleneceği sistem konumu
-	PACKAGEDIR=$(pwd) #paketin derleme talimatının verildiği konum
-	SOURCEDIR="/home/$user/distro/build/${name}-${version}" #Paketin kaynak kodlarının olduğu konum
-	initsetup(){
-		        mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-		        rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
-		        cd $ROOTBUILDDIR #dizinine geçiyoruz
-		        wget ${source}
-		        for f in *\ *; do mv "$f" "${f// /}"; done #isimde boşluk varsa silme işlemi yapılıyor
-		        dowloadfile=$(ls|head -1)
-		        filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		        if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
-		        director=$(find ./* -maxdepth 0 -type d)
-		        directorname=$(basename ${director})
-		        if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-		        mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
-	}
-	setup()	{
-		    cp -prfv $PACKAGEDIR/files/* $SOURCEDIR/
-		    patch -Np1 < $SOURCEDIR/patches/remove-zstd.patch
-		    patch -Np1 < $SOURCEDIR/patches/remove-logsave.patch
-		    patch -Np1 < $SOURCEDIR/patches/non-debian.patch
-	}
-	build()	{
-	echo ""
-	}
-	package()	{
-		    cat debian/*.install | sed "s/\t/ /g" | tr -s " " | while read line ; do
-		    file=$(echo $line | cut -f1 -d" ")
-		    target=$(echo $line | cut -f2 -d" ")
-		    mkdir -p ${DESTDIR}/$target
-		    cp -prvf $file ${DESTDIR}/$target/
-		    done
-		    # install mkinitramfs
-		    cp -pvf mkinitramfs ${DESTDIR}/usr/sbin/mkinitramfs
-		    sed -i "s/@BUSYBOX_PACKAGES@/busybox/g" ${DESTDIR}/usr/sbin/mkinitramfs
-		    sed -i "s/@BUSYBOX_MIN_VERSION@/1.22.0/g" ${DESTDIR}/usr/sbin/mkinitramfs
-		    # Remove debian stuff
-		    rm -rvf ${DESTDIR}/etc/kernel
-		    # install sysconf
-		    mkdir -p ${DESTDIR}/etc/sysconf.d
-		    install $SOURCEDIR/initramfs-tools.sysconf ${DESTDIR}/etc/sysconf.d/initramfs-tools
-		    install $SOURCEDIR/zzz-busybox ${DESTDIR}/usr/share/initramfs-tools/hooks/
-		    install $SOURCEDIR/modules ${DESTDIR}/usr/share/initramfs-tools/
-		    install $SOURCEDIR/modules ${DESTDIR}/etc/initramfs-tools/
+		
+	# Paketin yükleneceği tasarlanan sistem konumu
+	DESTDIR="$HOME/distro/rootfs"
+	# Derleme konumu
+	ROOTBUILDDIR="/tmp/kly/build"
+	# Derleme yapılan paketin derleme konumun
+	BUILDDIR="/tmp/kly/build/build-${name}-${version}" 
+	# paketin derleme talimatının verildiği konum
+	PACKAGEDIR=$(pwd) 
+	# Paketin kaynak kodlarının olduğu konum
+	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
 
-		    mkdir -p ${DESTDIR}/usr/share/initramfs-tools/conf-hooks.d
-		    install $SOURCEDIR/conf-hooks.d/busybox ${DESTDIR}/usr/share/initramfs-tools/conf-hooks.d/
-		    mkdir -p ${DESTDIR}/etc/initramfs-tools/scripts
-			${DESTDIR}/sbin/ldconfig -r ${DESTDIR}           # sistem guncelleniyor
-	  }
-	initsetup       # initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir
-	setup           # setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların ayalanması sağlanır.
-	build           # build fonksiyonu çalışır ve kaynak dosyaları derlenir.
-	package         # package fonksiyonu çalışır, yükleme öncesi ayarlamalar yapılır ve yüklenir.
+	# initsetup
+	# derleme dizini yoksa oluşturuluyor
+	mkdir -p  $ROOTBUILDDIR
+	# içeriği temizleniyor
+	rm -rf $ROOTBUILDDIR/* 
+	cd $ROOTBUILDDIR #dizinine geçiyoruz
+	wget ${source}
+	# isimde boşluk varsa silme işlemi yapılıyor
+	for f in *\ *; do mv "$f" "${f// /}"; done 
+	dowloadfile=$(ls|head -1)
+	filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
+	if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+	director=$(find ./* -maxdepth 0 -type d)
+	directorname=$(basename ${director})
+	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
+	
+	# setup
+
+	cp -prfv $PACKAGEDIR/files/* $SOURCEDIR/
+	patch -Np1 < $SOURCEDIR/patches/remove-zstd.patch
+	patch -Np1 < $SOURCEDIR/patches/remove-logsave.patch
+	patch -Np1 < $SOURCEDIR/patches/non-debian.patch
+	
+	# build
+	    
+	# package
+	cat debian/*.install | sed "s/\t/ /g" | tr -s " " | while read line ; do
+	file=$(echo $line | cut -f1 -d" ")
+	target=$(echo $line | cut -f2 -d" ")
+	mkdir -p ${DESTDIR}/$target
+	cp -prvf $file ${DESTDIR}/$target/
+	done
+	# install mkinitramfs
+	cp -pvf mkinitramfs ${DESTDIR}/usr/sbin/mkinitramfs
+	sed -i "s/@BUSYBOX_PACKAGES@/busybox/g" ${DESTDIR}/usr/sbin/mkinitramfs
+	sed -i "s/@BUSYBOX_MIN_VERSION@/1.22.0/g" ${DESTDIR}/usr/sbin/mkinitramfs
+	# Remove debian stuff
+	rm -rvf ${DESTDIR}/etc/kernel
+	# install sysconf
+	mkdir -p ${DESTDIR}/etc/sysconf.d
+	install $SOURCEDIR/initramfs-tools.sysconf ${DESTDIR}/etc/sysconf.d/initramfs-tools
+	install $SOURCEDIR/zzz-busybox ${DESTDIR}/usr/share/initramfs-tools/hooks/
+	install $SOURCEDIR/modules ${DESTDIR}/usr/share/initramfs-tools/
+	install $SOURCEDIR/modules ${DESTDIR}/etc/initramfs-tools/
+
+	mkdir -p ${DESTDIR}/usr/share/initramfs-tools/conf-hooks.d
+	install $SOURCEDIR/conf-hooks.d/busybox ${DESTDIR}/usr/share/initramfs-tools/conf-hooks.d/
+	mkdir -p ${DESTDIR}/etc/initramfs-tools/scripts
 
 
 .. raw:: pdf
@@ -92,7 +94,7 @@ Paket adında(initramfs-tools) istediğiniz bir konumda bir dizin oluşturun ve 
 .. code-block:: shell
 	
 	chmod 755 build
-	sudo ./build
+	fakeroot ./build
 
 **/etc/initramfs-tools/modules**
 ---------------------------------

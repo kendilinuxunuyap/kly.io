@@ -1,5 +1,4 @@
 .. footer:: ###Page###
-
 .. toctree::
 	:glob:
 

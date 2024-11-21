@@ -29,7 +29,7 @@ Burada maddeler halinde anlatılan işlem adımlarını bir paket oluşturma ama
 
 kly paket sisteminin temel parçalarından en önemlisi paket oluşturma uygulamasıdır. Dokümanda temel paketlerin nasıl derlendiği **Paket Derleme** başlığı altında anlatılmıştı. Bir paket üzerinden(readline) örneklendirerek paketimizi oluşturacak scriptimizi yazalım.
 
-Dokümanda readline paketi nasıl derleneceği aşağıdaki script olarak verilmiştir.
+Daha önceden derlediğimiz readline paketinin scriptini,  aşağıdaki gibi düzenlendi.
 
 .. code-block:: shell
 
@@ -41,33 +41,39 @@ Dokümanda readline paketi nasıl derleneceği aşağıdaki script olarak verilm
 	source="https://ftp.gnu.org/pub/gnu/readline/${name}-${version}.tar.gz"
 	groups="sys.apps"
 	
-	display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"	#Detect the name of the display in use
-	user=$(who | grep '('$display')' | awk '{print $1}')	#Detect the user using such display
-	ROOTBUILDDIR="/home/$user/distro/build" # Derleme konumu
-	BUILDDIR="/home/$user/distro/build/build-${name}-${version}" #Derleme yapılan paketin derleme konumun
-	DESTDIR="/home/$user/distro/rootfs" #Paketin yükleneceği sistem konumu
-	PACKAGEDIR=$(pwd) #paketin derleme talimatının verildiği konum
-	SOURCEDIR="/home/$user/distro/build/${name}-${version}" #Paketin kaynak kodlarının olduğu konum
-
+	# Paketin yükleneceği tasarlanan sistem konumu
+	DESTDIR="$HOME/distro/rootfs"
+	# Derleme konumu
+	ROOTBUILDDIR="/tmp/kly/build"
+	# Derleme yapılan paketin derleme konumun
+	BUILDDIR="/tmp/kly/build/build-${name}-${version}" 
+	# paketin derleme talimatının verildiği konum
+	PACKAGEDIR=$(pwd) 
+	# Paketin kaynak kodlarının olduğu konum
+	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
+		
 	initsetup(){
-		    mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-		    rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
-		    cd $ROOTBUILDDIR #dizinine geçiyoruz
-            wget ${source}
-            for f in *\ *; do mv "$f" "${f// /}"; done #isimde boşluk varsa silme işlemi yapılıyor
-		    dowloadfile=$(ls|head -1)
-		    filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		    if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
-		    director=$(find ./* -maxdepth 0 -type d)
-		    directorname=$(basename ${director})
-		    if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-		    mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
+		# derleme dizini yoksa oluşturuluyor
+		mkdir -p  $ROOTBUILDDIR
+		# içeriği temizleniyor
+		rm -rf $ROOTBUILDDIR/*
+		# dizinine geçiyoruz
+		cd $ROOTBUILDDIR 
+		wget ${source}
+		# isimde boşluk varsa silme işlemi yapılıyor
+		for f in *\ *; do mv "$f" "${f// /}"; done 
+		dowloadfile=$(ls|head -1)
+		filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
+		if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+		director=$(find ./* -maxdepth 0 -type d)
+		directorname=$(basename ${director})
+		if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+		mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
 	}
 	
 	setup(){
 		cp -prvf $PACKAGEDIR/files $SOURCEDIR/
-		./configure --prefix=/usr \
-			--libdir=/usr/lib64
+		./configure --prefix=/usr --libdir=/usr/lib64
 	}
 
 	build(){
@@ -76,9 +82,7 @@ Dokümanda readline paketi nasıl derleneceği aşağıdaki script olarak verilm
 
 	package(){
 		make SHLIB_LIBS="-L/tools/lib -lncursesw" DESTDIR="$DESTDIR" install pkgconfigdir="/usr/lib64/pkgconfig"
-		
 		install -Dm644 $SOURCEDIR/files/inputrc "$DESTDIR"/etc/inputrc
-		${DESTDIR}/sbin/ldconfig -r ${DESTDIR}           # sistem guncelleniyor
 	}
 	initsetup       # initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir
 	setup           # setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların ayalanması sağlanır.
@@ -104,11 +108,12 @@ Bu sebeplerden dolayı **readline** paketleme scriptini yeniden düzenleyelim. Y
 
 .. code-block:: shell
 	
-	#genel değişkenler tanımlanır
+	# genel değişkenler tanımlanır
 	initsetup() {}
 	
-	#klybuild dosya fonksiyonları birleştiriliyor
-	source klybuild # bu komutla setup build package fonsiyonları klybuild doyasından alınıp birleştiriliyor
+	# klybuild dosya fonksiyonları birleştiriliyor
+	# bu komutla setup build package fonsiyonları klybuild doyasından alınıp birleştiriliyor
+	source klybuild 
 	
 	packageindex() {}
 	packagecompress() {}
@@ -171,11 +176,17 @@ Bu şekilde ayrılmasının temel sebebi  **klypaketle** scriptinde hep aynı i�
 	dizin=$(pwd)
 	echo "Paket : $paket"
 	source ${paket}/klybuild
+	# Paketin yükleneceği tasarlanan sistem konumu
+	DESTDIR="$HOME/distro/rootfs"
+	# Derleme konumu
 	ROOTBUILDDIR="/tmp/kly/build"
-	BUILDDIR="/tmp/kly/build/build-${name}-${version}" #Derleme yapılan dizin
-	DESTDIR="/tmp/kly/build/rootfs-${name}-${version}" #Paketin yükleneceği sistem konumu
-	PACKAGEDIR="$dizin/$paket"
-	SOURCEDIR="/tmp/kly/build/${name}-${version}"
+	# Derleme yapılan paketin derleme konumun
+	BUILDDIR="/tmp/kly/build/build-${name}-${version}" 
+	# paketin derleme talimatının verildiği konum
+	PACKAGEDIR=$(pwd) 
+	# Paketin kaynak kodlarının olduğu konum
+	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
+
 	# 1. madde, paketin indirilmesi
 	initsetup(){
 		mkdir -p $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor

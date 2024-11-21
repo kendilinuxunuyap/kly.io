@@ -28,11 +28,14 @@ Derleme
 	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
 
 	# initsetup
-	mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-	rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
+	# derleme dizini yoksa oluşturuluyor
+	mkdir -p  $ROOTBUILDDIR
+	# içeriği temizleniyor
+	rm -rf $ROOTBUILDDIR/* 
 	cd $ROOTBUILDDIR #dizinine geçiyoruz
 	wget ${source}
-	for f in *\ *; do mv "$f" "${f// /}"; done #isimde boşluk varsa silme işlemi yapılıyor
+	# isimde boşluk varsa silme işlemi yapılıyor
+	for f in *\ *; do mv "$f" "${f// /}"; done 
 	dowloadfile=$(ls|head -1)
 	filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
 	if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
