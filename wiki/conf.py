@@ -6,7 +6,7 @@
 html_theme = 'alabaster'
 
 
-project = 'distro Wiki'
+project = 'distroWiki'
 copyright = 'distro 2023'
 author = 'karahan'
 language = 'tr'
