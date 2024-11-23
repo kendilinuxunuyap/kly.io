@@ -51,31 +51,18 @@ lddscript.sh
 .. code-block:: shell
 
 	#!/bin/bash
+	dosyayolu="$1"
+	hedef="$2"
 
-	if [ ${#} != 2 ]
-	then
-	    echo "usage $0 PATH_TO_BINARY target_folder"
-	    exit 1
-	fi
-	path_to_binary="$1"
-	target_folder="$2"
+	echo "İkili Dosya Kopyalanıyor"
+	cp --parents "${dosyayolu}" "${hedef}"
 
-	# if we cannot find the the binary we have to abort
-	if [ ! -f "${path_to_binary}" ]
-	then
-	    echo "The file '${path_to_binary}' was not found. Aborting!"
-	    exit 1
-	fi
-
-	echo "---> copy binary itself" # copy the binary itself
-	cp --parents -v "${path_to_binary}" "${target_folder}"
-
-	echo "---> copy libraries" # copy the library dependencies
-	ldd "${path_to_binary}" | awk -F'[> ]' '{print $(NF-1)}' | while read -r lib
+	echo "İkili Dosyanın Bağımlılıkları Kopyalanıyor" 
+	ldd "${dosyayolu}" | awk -F'[> ]' '{print $(NF-1)}' | while read -r kutuphane
 	do
-	    [ -f "$lib" ] && cp -v --parents "$lib" "${target_folder}"
+	    [ -f "$kutuphane" ] && cp --parents "$kutuphane" "${hedef}"
 	done
-
+	
 Basit Sistem Oluşturma
 ----------------------
 

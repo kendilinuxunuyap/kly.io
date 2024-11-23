@@ -159,13 +159,8 @@ Sisteme giriş yaptığımız kullanıcının ev dizinindeki **distro/rootfs** d
 .. code-block:: shell
 	
 	#!/bin/bash
-	# Detect the name of the display in use
-	display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"
-	# Detect the user using such display
-	user=$(who | grep '('$display')' | awk '{print $1}')
-
-	distro="/home/$user/distro"
-	rootfs="/home/$user/distro/rootfs"
+	distro="$HOME/distro"
+	rootfs="$HOME/distro/rootfs"
 	rm -rf "$distro/iso"
 	### system chroot  bind/mount
 	for dir in dev dev/pts proc sys; do mount -o bind /$dir $rootfs/$dir; done

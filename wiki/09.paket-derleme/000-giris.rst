@@ -121,8 +121,9 @@ Paketlere başlamadan önce şu paketleri kurmanızı tavsiye ederim.
 - sudo apt install patch
 - sudo apt install libtool
 - sudo apt install grub-pc grub-pc-bin
+- sudo apt install fakeroot
 
-Paketlerin derlenmesini **root** yetkisiyle yapınız.
+Paketlerin derlenmesini **fakeroot** yetkisiyle yapınız.
 
 
 .. raw:: pdf

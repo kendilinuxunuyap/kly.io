@@ -48,22 +48,21 @@ Derleme
 	director=$(find ./* -maxdepth 0 -type d)
 	directorname=$(basename ${director})
 	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
+	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
 	
 	# setup
 	cp -prfv $PACKAGEDIR/files $SOURCEDIR/
 	make defconfig
-	sed -i "s|.*CONFIG_STATIC_LIBGCC .*|CONFIG_STATIC_LIBGCC=y|" .config
-	sed -i "s|.*CONFIG_STATIC .*|CONFIG_STATIC=y|" .config
 	
 	# build
-	make 
+	LDFLAGS="--static" make 
 	    
 	# package
 	mkdir -p $DESTDIR/bin
 	install busybox ${DESTDIR}/bin/busybox
 	mkdir -p ${DESTDIR}/usr/share/udhcpc/ ${DESTDIR}/etc/init.d/
-	install $SOURCEDIR/files/udhcpc.script ${DESTDIR}/usr/share/udhcpc/default.script	 	# install udhcpc script and service	
+	install $SOURCEDIR/files/udhcpc.script ${DESTDIR}/usr/share/udhcpc/default.script	 	
+	# install udhcpc script and service	
 	install $SOURCEDIR/files/udhcpc.openrc ${DESTDIR}/etc/init.d/udhcpc
 	cd $DESTDIR/bin&&ln -s busybox hostname
 

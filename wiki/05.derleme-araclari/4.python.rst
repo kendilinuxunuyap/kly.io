@@ -1,28 +1,17 @@
 python
 ++++++
 
-Python ile paket derlemek için genellikle **setuptools** ve **distutils** gibi kütüphaneler kullanılır. Öncelikle, projenizin kök dizininde bir **setup.py** dosyası oluşturmanız gerekir. Bu dosya, paketin yapılandırmasını ve gereksinimlerini tanımlar.
+Python ile paket derlemek için **setuptools** ve **distutils**  kütüphaneleri kullanılır. Python projelerinin kök dizininde bir **setup.py** dosyası olmalıdır. 
 
-Örnek bir setup.py dosyası aşağıdaki gibi olabilir:
+Kullanımı
+---------
 
-.. code-block:: shell
-
-	from setuptools import setup
-
-	setup(
-	    name='paket_adi',
-	    version='1.0',
-	    packages=['paket'],
-	    install_requires=[
-		'bağımlılık_paketi',
-	    ],
-	)
-
-Ardından, terminalde projenizin bulunduğu dizine giderek aşağıdaki komutu çalıştırarak paketi derleyebilirsiniz:
+Terminalde projenizin bulunduğu dizine giderek aşağıdaki komutu çalıştırarak paketi derleyebilirsiniz:
 
 .. code-block:: shell
+
 	# yükleme konumu
-	DESTDIR=/
+	DESTDIR=/usr
 	python3 -m build
 	python3 -m installer --destdir="$DESTDIR" dist/*.whl
 

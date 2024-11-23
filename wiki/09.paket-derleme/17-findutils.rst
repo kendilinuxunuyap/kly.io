@@ -42,7 +42,7 @@ Derleme
 	director=$(find ./* -maxdepth 0 -type d)
 	directorname=$(basename ${director})
 	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
+	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $SOURCEDIR
 	
 	# setup
 	./configure --prefix=/usr --libdir=/usr/lib64/

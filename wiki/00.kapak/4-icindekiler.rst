@@ -8,22 +8,22 @@
      - 5
    * - 2- :ref:`onhazirlik`
      - 6
-   * - 2- :ref:`derlemeturleri`
+   * - 3- :ref:`derlemeturleri`
      - 7
-   * - 3- :ref:`derlemearaclari`
-     - 8
-   * - 3- :ref:`minimalsistem`
-     - 13
-   * - 4- :ref:`paketderleme`
-     - 18
-   * - 5- :ref:`paketsistemi`
-     - 104
-   * - 6- :ref:`isohazirlama`
-     - 119
-   * - 7- :ref:`sistemkurulumu`
-     - 124
-   * - 9- :ref:`yardimcikonular`
+   * - 4- :ref:`derlemearaclari`
+     - 9
+   * - 5- :ref:`minimalsistem`
+     - 14
+   * - 6- :ref:`paketderleme`
+     - 20
+   * - 7- :ref:`paketsistemi`
      - 133
+   * - 8- :ref:`isohazirlama`
+     - 148
+   * - 9- :ref:`sistemkurulumu`
+     - 153
+   * - 10- :ref:`yardimcikonular`
+     - 162
  
 .. raw:: pdf
 

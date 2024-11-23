@@ -258,7 +258,7 @@ Bu bilgilere göre readline paketi nasıl oluşturulur onu görelim. Paketlerimi
 	# readline için hazırlanan klybuild dosyası, readline dizininin içine kopyalayın
 	cd ..
 	# klypaketle dosyamıza parametre olarak readline dizini verilmiştir.
-	./klypaketle readline 
+	fakeroot ./klypaketle readline 
 
 Komut çalışınca readline/readline-8.1.kly dosyası oluşacaktır. Aşağıda resimde nasıl yapıldığı gösterilmiştir. Burada anlatılan **klypaketle** script dosyasını **/bin/** konumuna oluşturnuz ve **chmod 755 /bin/klypaketle** komutuyla çalıştırma izni vermeliyiz. **kly** paket sistemi için yapılacak olan **bsppaketle, klyupdate, klykur, klykaldir** scriptlerinide **/bin/** konumunda oluşturulmalı veya kopyalanmalı ve çalıştırma izni verilmeli.
 

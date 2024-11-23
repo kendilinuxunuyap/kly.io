@@ -59,8 +59,8 @@ Eğer /boot bölümünü ayırmayacaksanız grub yüklenirken **unknown filesyst
 
 .. code-block:: shell
 
-	$ e2fsck -f /dev/sda2
-	$ tune2fs -O ^metadata_csum /dev/sda2
+	e2fsck -f /dev/sda2
+	tune2fs -O ^metadata_csum /dev/sda2
 
 Dosya Sistemini Kopyalama
 --------------------------
@@ -70,10 +70,10 @@ Kurulacak sistemin imajını bir dizine bağlayalım.
 
 .. code-block:: shell
 		
-	$ mkdir -p cdrom
-	$ mkdir -p kaynak
-	$ mount -t iso9660 -o loop /dev/sr0 /cdrom/
-	$ mount -t squashfs -o loop /cdrom/live/filesystem.squashfs /kaynak
+	mkdir -p cdrom
+	mkdir -p kaynak
+	mount -t iso9660 -o loop /dev/sr0 /cdrom/
+	mount -t squashfs -o loop /cdrom/live/filesystem.squashfs /kaynak
 
 Şimdi de disk bölümümüzü bağlayalım.
 

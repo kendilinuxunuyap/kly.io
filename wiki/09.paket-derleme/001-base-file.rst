@@ -181,7 +181,7 @@ Paket Derleme Yöntemi
 
 
 Derleme scripti için **build** dosyası oluşturup içine yapıştırın ve kaydedin. 
-**build**  dosyasının bulunduğu dizininde terminali açarak aşağıdaki gibi çalıştırınız.
+**build**  dosyasının bulunduğu dizininde terminali açarak aşağıdaki gibi çalıştırınız. Paketlerimizi **fakeroot** komutuyla çalıştırmalıyız. **fakeroot** özellikle paket oluşturma aşamasında, kök yetkisi olmadan dosya izinlerini ve sahipliklerini ayarlamak için oldukça faydalıdır. **fakeroot** konusunda yardımcı konular bölümünde bilgi verilmiştir.
 
 .. code-block:: shell
 	

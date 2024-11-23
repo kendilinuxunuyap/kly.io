@@ -41,18 +41,18 @@ Kurulacak sistemin imajını bir dizine bağlayalım.
 
 .. code-block:: shell
 		
-	$ mkdir -p cdrom
-	$ mkdir -p kaynak
-	$ mount -t iso9660 -o loop /dev/sr0 /cdrom/
-	$ mount -t squashfs -o loop /cdrom/live/filesystem.squashfs /kaynak
+	mkdir -p cdrom
+	mkdir -p kaynak
+	mount -t iso9660 -o loop /dev/sr0 /cdrom/
+	mount -t squashfs -o loop /cdrom/live/filesystem.squashfs /kaynak
 
 Şimdi de disk bölümümüzü bağlayalım.
 
 .. code-block:: shell
 
-	$ mkdir -p hedef
-	$ mount /dev/sda1 /hedef
-	$ mkdir -p /hedef/boot
+	mkdir -p hedef
+	mount /dev/sda1 /hedef
+	mkdir -p /hedef/boot
 
 Ardından dosyaları kopyalayalım.
 
@@ -70,22 +70,22 @@ grub kurulumu yapmak için grub paketinini kurulu olduğundan emin olun.
 
 .. code-block:: shell
 
-	$ mkdir -p /hedef/dev
-	$ mkdir -p /hedef/sys
-	$ mkdir -p /hedef/proc 
-	$ mkdir -p /hedef/run
-	$ mkdir -p /hedef/tmp
-	$ mount --bind /dev /hedef/dev
-	$ mount --bind /sys /hedef/sys
-	$ mount --bind /proc /hedef/proc
-	$ mount --bind /run /hedef/run
-	$ mount --bind /tmp /hedef/tmp
+	mkdir -p /hedef/dev
+	mkdir -p /hedef/sys
+	mkdir -p /hedef/proc 
+	mkdir -p /hedef/run
+	mkdir -p /hedef/tmp
+	mount --bind /dev /hedef/dev
+	mount --bind /sys /hedef/sys
+	mount --bind /proc /hedef/proc
+	mount --bind /run /hedef/run
+	mount --bind /tmp /hedef/tmp
 	
 	# Bunun yerine aşağıdaki gibi de girilebilir.
 	for dir in /dev /sys /proc /run /tmp ; do
 		mount --bind /$dir /hedef/$dir
 	done
-	$ chroot /hedef
+	chroot /hedef
 
 
 Grub Kurulumu
@@ -93,7 +93,7 @@ Grub Kurulumu
 
 .. code-block:: shell
 
-	$ grub-install --boot-directory=/boot  /dev/sda
+	grub-install --boot-directory=/boot  /dev/sda
 
 
 grub.cfg Yapılandırılması
@@ -126,7 +126,7 @@ grub.cfg dosyasını elle düzenlemek yerine aşğıdaki komutla otomatik yapıl
 
 .. code-block:: shell
 	
-	$ grub-mkconfig -o /boot/grub/grub.cfg
+	grub-mkconfig -o /boot/grub/grub.cfg
 
 
 

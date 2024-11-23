@@ -20,8 +20,8 @@ Bu özellikleri açısından Gnu/Linux tercih etmek çok avantajlıdır. Gelişt
 .. image:: /_static/images/contact.svg
 	:width: 150
   		
-- https://github.com/kendiliuxunuyap
-- kendiliuxunuyap@gmail.com
+- https://github.com/kendilinuxunuyap
+- kendilinuxunuyap@gmail.com
 
 
 .. raw:: pdf
