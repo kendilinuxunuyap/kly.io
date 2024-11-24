@@ -110,21 +110,22 @@ Listede bulunan paketler sırasıyla nasıl derleneceği ayrı başlıklar altı
 
 Paketlere başlamadan önce şu paketleri kurmanızı tavsiye ederim.
 
-- sudo apt-get install autoconf
-- sudo apt-get install automake
-- sudo apt-get install autotools-dev
-- sudo apt-get install make
-- sudo apt-get install meson
-- sudo apt-get install cmake
-- sudo apt-get install ninja-build
-- sudo apt-get install pkgconf
-- sudo apt install patch
-- sudo apt install libtool
-- sudo apt install grub-pc grub-pc-bin
-- sudo apt install fakeroot
+.. code-block:: shell
 
-Paketlerin derlenmesini **fakeroot** yetkisiyle yapınız.
+	sudo apt-get install autoconf \
+	    automake \
+	    autotools-dev \
+	    make \
+	    meson \
+	    cmake \
+	    ninja-build \
+	    pkgconf \
+	    patch \
+	    libtool \
+	    grub-pc grub-pc-bin \
+	    fakeroot
 
+Paketlerin derlenmesini **fakeroot** ile yapınız.
 
 .. raw:: pdf
 

@@ -3,9 +3,9 @@
 **Paket Sitemi**
 ++++++++++++++++
 
-Paket sistemi dağıtımların paketleri yükleme, kaldırma, güncelleme gibi temel işlemlerin yapılmasını sağlayan en önemli bileşenidir. 
+Paket sistemi dağıtımların paketleri yükleme, kaldırma, güncelleme gibi temel işlemlerin yapılmasını sağlayan en önemli bileşenidir.
 
-Paket sistemeleri bir paketi yüklemek istediğinde, genellikle daha önceden derlenmiş paketleri veya yükeleme aşamasında derleyebilir. Önceden derlenmiş olan yapıya(binary==ikili), yükleme aşamasında derleme işleminede (source==kaynak) paket sistemi denir. 
+Paket sistemeleri bir paketi yüklemek istediğinde, genellikle daha önceden derlenmiş paketleri veya yükeleme aşamasında derleyebilir. Önceden derlenmiş olan yapıya(binary/ikili), yükleme aşamasında derleme işleminede (source/kaynak) paket sistemi denir.
 
 Gnu/Linux deneyimi az olan kullanıcılar için  daha önceden hazırlanmış ikili paketler tercih edilmektedir.
 
@@ -22,8 +22,9 @@ Paket sisteminde, uygulama paketi haline getirilip sisteme kurulur. Genelde pake
 
 Bazı dağıtımların kullandığı paket sistemeleri şunlardır.
 
-- apt: Debian dağıtımının kullandığı paket sistemi.
-- emerge :Gentoo dağıtımının kullandığı paket sistemi.
+- apt: Debian dağıtımının kullandığı paket sistemi. (ikili)
+- pacman: Archlinux dağıtımının kullandığı paket sistemi. (ikili)
+- emerge :Gentoo dağıtımının kullandığı paket sistemi. (kaynak)
 
 **kly Paket Sistemi**
 ---------------------

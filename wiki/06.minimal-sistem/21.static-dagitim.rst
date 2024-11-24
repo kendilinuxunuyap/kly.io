@@ -41,26 +41,27 @@ Komutlarından sonra **init.c** dosya içeriği aşağıdaki gibi olmalıdır.
 
 	#include<stdio.h>
 
-	int main()
-	{
+	int main() {
 	char data[30];
-	while(1)
-	{
-	printf(">>");scanf("%s",data);
-	printf("girilen bilgi: %s\n",data);
-	}
-	return 0;
+	    while(1){
+	        printf(">>");
+	        scanf("%s",data);
+	        printf("girilen bilgi: %s\n",data);
+	    }
+	    return 0;
 	}
 
 **init.c** dosyası sonsuz bir döngüde bilgi alıyor ve ekrana girilen bilgi diye tekrar yazdırılıyor.
 Şimdi ise **static** olarak derleyelim. **Static** derleme hiç bir başka
 dosyaya ihtiyaç duymadan çalışacağı anlamına gelmektedir.
 
-**gcc init.c -o init -static** bu komutla static olarak derledik. 
-	
+**Not:** init asla kapanmamalıdır. Kapandığı taktirde **kernel panic** hatası alırsınız.
+
+**gcc init.c -o init -static** bu komutla static olarak derledik.
+
 .. code-block:: shell
 
-	ldd ./init	 
+	ldd ./init
 	özdevimli bir çalıştırılabilir değil
 
 "özdevimli bir çalıştırılabilir değil" dinamik değil diyor yani static kısacası bir bağımlılığı yok demektir.

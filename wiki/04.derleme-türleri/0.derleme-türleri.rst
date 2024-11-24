@@ -85,9 +85,9 @@ Sistemdeki kütüpkhanelerin konumlarını **/etc/ld.so.conf** dosyasına bakara
 
 .. code-block:: shell
 
+	include /etc/ld.so.conf.d/*.conf
 	/usr/local/lib64
 	/usr/local/lib
-	include /etc/ld.so.conf.d/*.conf
 	/usr/lib64
 	/usr/lib
 	/lib64

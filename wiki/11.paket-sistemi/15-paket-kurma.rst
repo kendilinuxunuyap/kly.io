@@ -9,7 +9,7 @@ Hazırlanan dağıtımda paketlerin kurulması için  sırasıyla aşağıdaki i
 
 	- Paketin bağımlı olduğu paketler varmı kontrol edilir
 	- Yüklü olmayan bağımlılıklar yüklenir
-	
+
 4. Yüklenen paket bilgileri(name, version ve bağımlılık) yüklü paketlerin index bilgilerini tutan paket sistemi dizininindeki index dosyasına eklenir.	
 5. Açılan paket içindeki yüklenen dosyaların nereye yüklendiğini tutan file.index dosyası paket sistemi dizinine yüklenir
 
@@ -26,7 +26,7 @@ Bu işlemler daha detaylandırılabilir. Bu işlemlerin detaylı olması paket s
 	cp -rfp ./* /
 	cp file.index /paket/veri/yolu/paket.index
 
-- Bu örnekte ilk satırda geçici dizine gittik 
+- Bu örnekte ilk satırda geçici dizine gittik
 - Paketi oraya açtık.
 - Paket içeriğini kök dizine kopyaladık.
 - Paket dosya listesini verilerin tutulduğu yere kopyaladık.
@@ -40,7 +40,7 @@ Bu işlemden sonra paket kurulmuş oldu.
 
 **kly Paket Kurma Scripti Tasarlama**
 -------------------------------------
-Burada basit seviyede kurulum yapan script kullanılmıştır. Detaylandırıldıkça doküman güncellenecektir. Kurulum scripti aşağıda görülmektedir.
+Burada basit seviyede kurulum yapan script kullanılmıştır. Kurulum scripti aşağıda görülmektedir.
 
 Paket kurulurken paket içerisinde bulunan dosyalar sisteme kopyalanır.
 Daha sonra istenirse silinebilmesi için paket içeriğinde dosyaların listesi tutulur.
@@ -61,7 +61,7 @@ Bu dosya ayrıca paketin bütünlüğünü kontrol etmek için de kullanılır.
 	depends=$(echo $(cat $target/etc/kly/index.lst|grep $name)|cut -d"\"" -f6)
 	# index dosyamızda paket aranıyor
 	if [ ! -n "${paket}" ]; then
-	echo "***********Paket Bulunamadı**********"; exit
+	    echo "***********Paket Bulunamadı**********"; exit
 	fi
 
 	# 1. adım paketi indirme
@@ -81,21 +81,21 @@ Bu dosya ayrıca paketin bütünlüğünü kontrol etmek için de kullanılır.
 	cp -prfv rootfs/* $target/
 
 	# 4. adım name version depends /var/lib/kly/index.lst eklenmesi
-	echo "name=\"${paket}\":"version=\"${version}\":"depends=\"${depends}\"">>$target/var/lib/kly/index.lst
+	echo "name=\"${paket}\":"version=\"${version}\":"depends=\"${depends}\"" >> $target/var/lib/kly/index.lst
 	# 5. adım paket içinde gelen paket dosyalarının dosya ve dizin yapısını tutan
 	# file index dosyanının /var/lib/kly/ konumuna kopyalanması
 	cp file.index $target/var/lib/kly/${paket}-${version}.lst
-	
+
 **klykur** Scriptini Kullanma
 -----------------------------
 
 Script iki parametre almaktadır. İlk parametre paket adı. İkinci parametremiz ise nereye kuracağını belirten hedef olmalıdır. Bu scripti kullanarak readline paketi aşağıdaki gibi kurulabilir. 
 
 .. code-block:: shell
-	
+
 	./klykur readline /home/user1/testiso
 	# /home/user1/testiso konumu hazırladığımız dağıtım konumudur.
-	# kendi siteminize uygun konum belirleyiniz. 
+	# kendi siteminize uygun konum belirleyiniz.
 
 .. raw:: pdf
 

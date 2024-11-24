@@ -11,7 +11,7 @@ Kernele modul yükleme kaldırma için kmod aracı kullanılmaktadır. kmaod ara
 
 		ln -s kmod /bin/depmod
 		ln -s kmod /bin/insmod
-		ln -s kmod /initrd/bin/lsmod
+		ln -s kmod /bin/lsmod
 		ln -s kmod /bin/modinfo
 		ln -s kmod /bin/modprobe
 		ln -s kmod /bin/rmmod

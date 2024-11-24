@@ -11,7 +11,7 @@ Terminalde projenizin bulunduğu dizine giderek aşağıdaki komutu çalıştır
 .. code-block:: shell
 
 	# yükleme konumu
-	DESTDIR=/usr
+	DESTDIR=/
 	python3 -m build
 	python3 -m installer --destdir="$DESTDIR" dist/*.whl
 

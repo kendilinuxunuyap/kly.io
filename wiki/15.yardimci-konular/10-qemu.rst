@@ -18,9 +18,11 @@ qemu Kullanımı
 
 	# 30GB disk oluşturuldu.
 	qemu-img create disk.img 30G
-	qemu-system-x86_64 --enable-kvm -hda disk.img -m 2G -cdrom etahta.iso
-	# qemu-system-x86_64 --enable-kvm -hda disk.img -m 2G #sadece disk ile çalıştırılıyor
-	# qemu-system-x86_64 -m 2G -cdrom etahta.iso          #sadece iso doayası ile çalıştırma
+	qemu-system-x86_64 --enable-kvm -hda disk.img -m 2G -cdrom etahta.iso,
+	# sadece disk ile çalıştırılıyor
+	# qemu-system-x86_64 --enable-kvm -hda disk.img -m 2G
+	# sadece iso doayası ile çalıştırma
+	# qemu-system-x86_64 -m 2G -cdrom etahta.iso          
 
 Sistem Hızlandırılması
 ----------------------
@@ -54,21 +56,24 @@ qemu ile vmlinuz ve initrd.img dosyaları iso olmadan test edilebilir.
 
 .. code-block:: shell
 
-	qemu-system-x86_64 --enable-kvm -kernel /boot/vmlinuz-5.17 -initrd /home/deneme/initrd.img -append "quiet" -m 512m
+	qemu-system-x86_64 --enable-kvm -kernel /boot/vmlinuz-5.17 \
+	    -initrd /home/deneme/initrd.img -append "quiet" -m 512m
 
 qemu Terminal Yönlendirmesi
 ----------------------------
 
 .. code-block:: shell
 	
-	qemu-system-x86_64 --enable-kvm -kernel vmlinuz -initrd initrd.img -m 3G -serial stdio -append "console=ttyS0"
+	qemu-system-x86_64 --enable-kvm -kernel vmlinuz -initrd initrd.img \
+	    -m 3G -serial stdio -append "console=ttyS0"
 
 Diskteki Sistemin Açılışını Terminale Yönlendirme
 -------------------------------------------------
 
 .. code-block:: shell
 	
-	qemu-system-x86_64 -nographic -kernel boot/vmlinuz -hda disk.img -append console=ttyS0
+	qemu-system-x86_64 -nographic -kernel boot/vmlinuz \
+	    -hda disk.img -append console=ttyS0
 
 Kaynak:
 | https://www.ubuntubuzz.com/2021/04/how-to-boot-uefi-on-qemu.html  

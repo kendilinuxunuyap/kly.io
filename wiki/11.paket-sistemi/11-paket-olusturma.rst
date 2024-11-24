@@ -58,22 +58,33 @@ Daha önceden derlediğimiz readline paketinin scriptini,  aşağıdaki gibi dü
 		# içeriği temizleniyor
 		rm -rf $ROOTBUILDDIR/*
 		# dizinine geçiyoruz
-		cd $ROOTBUILDDIR 
+		cd $ROOTBUILDDIR
 		wget ${source}
 		# isimde boşluk varsa silme işlemi yapılıyor
-		for f in *\ *; do mv "$f" "${f// /}"; done 
+		for f in *\ *; do
+		    mv "$f" "${f// /}";
+		done
 		dowloadfile=$(ls|head -1)
 		filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+		if [ "${filetype}" == "???" ]; then
+		    unzip  ${dowloadfile};
+		else
+		    tar -xvf ${dowloadfile}
+		fi
 		director=$(find ./* -maxdepth 0 -type d)
 		directorname=$(basename ${director})
-		if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
-		mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
+		if [ "${directorname}" != "${name}-${version}" ]; then
+		    mv $directorname ${name}-${version}
+		fi
+		mkdir -p $BUILDDIR $DESTDIR
+		cd $SOURCEDIR
 	}
-	
+
 	setup(){
 		cp -prvf $PACKAGEDIR/files $SOURCEDIR/
-		./configure --prefix=/usr --libdir=/usr/lib64
+		./configure \
+		    --prefix=/usr \
+		    --libdir=/usr/lib
 	}
 
 	build(){
@@ -81,13 +92,21 @@ Daha önceden derlediğimiz readline paketinin scriptini,  aşağıdaki gibi dü
 	}
 
 	package(){
-		make SHLIB_LIBS="-L/tools/lib -lncursesw" DESTDIR="$DESTDIR" install pkgconfigdir="/usr/lib64/pkgconfig"
-		install -Dm644 $SOURCEDIR/files/inputrc "$DESTDIR"/etc/inputrc
+		make install \
+		    SHLIB_LIBS="-L/tools/lib -lncursesw" \
+		    pkgconfigdir="/usr/lib64/pkgconfig" \
+		    DESTDIR="$DESTDIR"
 	}
-	initsetup       # initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir
-	setup           # setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların ayalanması sağlanır.
-	build           # build fonksiyonu çalışır ve kaynak dosyaları derlenir.
-	package         # package fonksiyonu çalışır, yükleme öncesi ayarlamalar yapılır ve yüklenir.
+	# initsetup fonksiyonunu çalıştırır ve kaynak dosyayı indirir.
+	initsetup
+	# setup fonksiyonu çalışır ve derleme öncesi kaynak dosyaların
+	# ayalanması sağlanır.
+	setup
+	# build fonksiyonu çalışır ve kaynak dosyaları derlenir.
+	build
+	# package fonksiyonu çalışır, yükleme öncesi ayarlamalar yapılır
+	# ve yüklenir.
+	package
 
 
 Bu script readline kodunu internetten indirip derliyor ve kurulumu yapıyor. Aslında bu scriptle **paketleme**, **paket kurma** işlemini bir arada yapıyor. Bu işlem mantıklı gibi olsada paket sayısı arttıkça ve rutin yapılan işlemleri tekrar tekrar yapmak gibi işlem fazlalığına sebep olmaktadır.
@@ -98,39 +117,55 @@ Bu sebeplerden dolayı **readline** paketleme scriptini yeniden düzenleyelim. Y
 --------------------
 
 .. code-block:: shell
-	
-	setup()	{}
-	build()	{}
-	package() {}
+
+	setup()	{
+	   ...
+	}
+	build()	{
+	   ...
+	}
+	package() {
+	   ...
+	}
 
 **klypaketle** Dosyası
 ----------------------
 
 .. code-block:: shell
-	
+
 	# genel değişkenler tanımlanır
-	initsetup() {}
-	
+	initsetup() {
+	   ...
+	}
+
 	# klybuild dosya fonksiyonları birleştiriliyor
-	# bu komutla setup build package fonsiyonları klybuild doyasından alınıp birleştiriliyor
-	source klybuild 
-	
-	packageindex() {}
-	packagecompress() {}
+	# bu komutla setup build package fonsiyonları klybuild doyasından
+	# alınıp birleştiriliyor
+	source klybuild
+
+	packageindex() {
+	   ...
+	}
+	packagecompress() {
+	   ...
+	}
 
 Aslında yukarıdaki **klypaketle** ve **klybuild** adlı script dosyaları tek bir script dosyası olarak **klypaketle** dosyası. İki dosyayı birleştiren **source klybuild** komutudur. **klypaketle** dosyası aşağıdaki gibi düşünebiliriz.
 
 .. code-block:: shell
-	
-	#genel değişkenler tanımlanır
-	initsetup() {}
-	
-	setup()	{} #klybuild dosyasından gelen fonksiyon, "source klybuild" komutu sonucu gelen fonksiyon
-	build()	{} #klybuild dosyasından gelen fonksiyon, "source klybuild" komutu sonucu gelen fonksiyon
-	package() {} #klybuild dosyasından gelen fonksiyon, "source klybuild" komutu sonucu gelen fonksiyon
-	
-	packageindex() {}
-	packagecompress() {}
+
+	# genel değişkenler klybuild içinde tanımlanır
+	# klypaketle dosyasından gelir
+	initsetup() {...}
+
+	# klpbuild dosyasından gelen fonksiyonlar
+	setup()	{...}
+	build()	{...}
+	package() {...}
+
+	# klypakelte dosyasından gelen fonksiyonlar
+	packageindex() {...}
+	packagecompress() {...}
 
 Bu şekilde ayrılmasının temel sebebi  **klypaketle** scriptinde hep aynı işlemler yapılırken **klybuild** scriptindekiler her pakete göre değişmektedir. Böylece paket yapmak için ilgili pakete özel **klybuild** dosyası düzenlememiz yeterli olacaktır. **klypaketle** dosyamızda **klybuild** scriptini kendisiyle birleştirip paketleme yapacaktır.
 
@@ -146,21 +181,22 @@ Bu şekilde ayrılmasının temel sebebi  **klypaketle** scriptinde hep aynı i�
 	description="readline kütüphanesi"
 	source="https://ftp.gnu.org/pub/gnu/readline/${name}-${version}.tar.gz"
 	groups="sys.apps"
-	#2. madde, derleme öncesi hazırlık 
+	#2. madde, derleme öncesi hazırlık
 	setup(){
-		cp -prvf $PACKAGEDIR/files $BUILDDIR/
-		$SOURCEDIR/configure --prefix=/usr \
-			--libdir=/usr/lib64
+		./configure \
+		  --prefix=/usr \
+			--libdir=/usr/lib
 	}
-	#3. madde, paketin derlenmesi 	
+	#3. madde, paketin derlenmesi
 	build(){
 		make SHLIB_LIBS="-L/tools/lib -lncursesw"
 	}
-	#4. madde, derlenen paketin bir dizine yüklenmesi 
+	#4. madde, derlenen paketin bir dizine yüklenmesi
 	package(){
-		make SHLIB_LIBS="-L/tools/lib -lncursesw" DESTDIR="$DESTDIR" install pkgconfigdir="/usr/lib64/pkgconfig"
-		
-		install -Dm644 files/inputrc "$DESTDIR"/etc/inputrc
+		make install \
+		    SHLIB_LIBS="-L/tools/lib -lncursesw" \
+		    DESTDIR="$DESTDIR" \
+		    pkgconfigdir="/usr/lib64/pkgconfig"
 	}
 
 
@@ -172,8 +208,8 @@ Bu şekilde ayrılmasının temel sebebi  **klypaketle** scriptinde hep aynı i�
 	
 	#!/usr/bin/env bash
 	set -e
-	paket=$1
-	dizin=$(pwd)
+	paket="$1"
+	dizin="$PWD"
 	echo "Paket : $paket"
 	source ${paket}/klybuild
 	# Paketin yükleneceği tasarlanan sistem konumu
@@ -189,54 +225,78 @@ Bu şekilde ayrılmasının temel sebebi  **klypaketle** scriptinde hep aynı i�
 
 	# 1. madde, paketin indirilmesi
 	initsetup(){
-		mkdir -p $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
-		rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
-		cd $ROOTBUILDDIR #dizinine geçiyoruz
-		if [ -n "${source}" ]
-		then
-		wget ${source}
-		dowloadfile=$(ls|head -1)
-		filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-		if [ "${filetype}" == "???" ]; then unzip ${dowloadfile}; else tar -xvf ${dowloadfile};fi
-		director=$(find ./* -maxdepth 0 -type d)
-		directorname=$(basename ${director})
-		if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+		# derleme dizini yoksa oluşturuluyor
+		mkdir -p $ROOTBUILDDIR
+		# içeriği temizleniyor
+		rm -rf $ROOTBUILDDIR/*
+		# dizinine geçiyoruz
+		cd $ROOTBUILDDIR
+		if [ -n "${source}" ] ; then
+		    wget ${source}
+		    dowloadfile=$(ls|head -1)
+		    filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
+		    if [ "${filetype}" == "???" ]; then
+		        unzip ${dowloadfile}
+		    else
+		        tar -xvf ${dowloadfile}
+		    fi
+		    director=$(find ./* -maxdepth 0 -type d)
+		    directorname=$(basename ${director})
+		    if [ "${directorname}" != "${name}-${version}" ]; then
+		        mv $directorname ${name}-${version}
+		    fi
 		fi
-		mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
+		mkdir -p $BUILDDIR $DESTDIR
+		cd $BUILDDIR
 		cp $PACKAGEDIR/klybuild $ROOTBUILDDIR/
 	}
-	# 6. madde, paketlenecek dosların listesini tutan file.index dosyası oluşturulur
-	packageindex()
-	{
+	# 6. madde, paketlenecek dosların listesini tutan file.index
+	# dosyası oluşturulur.
+	packageindex() {
 		rm -rf file.index
 		cd /tmp/kly/build/rootfs-${name}-${version}
 		find . -type f | while IFS= read file_name; do
-		if [ -f ${file_name} ]; then echo ${file_name:1}>>../file.index; fi
+		    if [ -f ${file_name} ]; then
+		        echo ${file_name:1} >>../file.index
+		    fi
 		done
 		find . -type l | while IFS= read file_name; do
-		if [ -L ${file_name} ]; then echo ${file_name:1}>>../file.index; fi
+		    if [ -L ${file_name} ]; then
+		        echo ${file_name:1} >> ../file.index
+		    fi
 		done
 	}
 	# paket dosyası oluşturulur;
-	# rootfs.tar.xz, file.index ve klybuild dosyaları tar.gz dosyası olarak hazırlanıyor.
-	# 7. madde, tar.gz dosyası olarak hazırlanan dosya kly ismiyle değiştirilip paketimiz hazırlanır.
-	packagecompress()
-	{
+	# rootfs.tar.xz, file.index ve klybuild dosyaları tar.gz dosyası
+	# olarak hazırlanıyor.
+	# 7. madde, tar.gz dosyası olarak hazırlanan dosya kly ismiyle
+	# değiştirilip paketimiz hazırlanır.
+	packagecompress() {
 		cd /tmp/kly/build/rootfs-${name}-${version}
 		tar -cf ../rootfs.tar ./*
 		cd /tmp/kly/build/
 		xz -9 rootfs.tar
-		tar -cvzf paket-${name}-${version}.tar.gz rootfs.tar.xz file.index klybuild
-		cp paket-${name}-${version}.tar.gz ${dizin}/${paket}/${name}-${version}.kly
+		tar -cvzf paket-${name}-${version}.tar.gz \
+		    rootfs.tar.xz file.index klybuild
+		cp paket-${name}-${version}.tar.gz \
+		    ${dizin}/${paket}/${name}-${version}.kly
 	}
 	# fonksiyonlar aşağıdaki sırayla çalışacaktır.
-	initsetup #bu dosya içindeki fonksiyon (indirilmesi)
-	setup #klybuild dosyasından gelen fonksiyon (derleme öncesi hazırlık)
-	build #klybuild dosyasından gelen fonksiyon (derleme)
-	package #klybuild dosyasından gelen fonksiyon (derlenen paketin dizine yüklenemesi)
-	packageindex #bu dosya içindeki fonksiyon (dizine yüklelen paketin indexlenmesi)
-	packagecompress #bu dosya içindeki fonksiyon (index.lst, derleme talimatı ve dizinin sıkıştırılmas)
-	
+	# bu dosya içindeki fonksiyon (indirilmesi)
+	initsetup
+	# klybuild dosyasından gelen fonksiyon (derleme öncesi hazırlık)
+	setup
+	# klybuild dosyasından gelen fonksiyon (derleme)
+	build
+	# klybuild dosyasından gelen fonksiyon (derlenen paketin dizine
+	# yüklenemesi)
+	package
+	# bu dosya içindeki fonksiyon (dizine yüklelen paketin indexlenmesi)
+	packageindex
+	# bu dosya içindeki fonksiyon (index.lst, derleme talimatı ve dizinin
+	# sıkıştırılması)
+	packagecompress
+
 Burada **readline** paketini örnek alarak **klypaketle** dosyasının ve **klybuild** dosyasının nasıl hazırlandığı anlatıldı.
 Diğer paketler için sadece hazırlanacak pakete uygun şekilde **klybuild** dosyası hazırlayacağız. **klypaketle**  dosyamızda değişiklik yapmayacağız. Artık  **klypaketle**  dosyası paketimizi oluşturan script **klybuild** ise hazırlanacak paketin bilgilerini bulunduran script doyasıdır.
 
@@ -255,10 +315,11 @@ Bu bilgilere göre readline paketi nasıl oluşturulur onu görelim. Paketlerimi
 
 	mkdir readline
 	cd readline
-	# readline için hazırlanan klybuild dosyası, readline dizininin içine kopyalayın
+	# readline için hazırlanan klybuild dosyası, readline dizininin içine
+	# kopyalayın
 	cd ..
 	# klypaketle dosyamıza parametre olarak readline dizini verilmiştir.
-	fakeroot ./klypaketle readline 
+	fakeroot ./klypaketle readline
 
 Komut çalışınca readline/readline-8.1.kly dosyası oluşacaktır. Aşağıda resimde nasıl yapıldığı gösterilmiştir. Burada anlatılan **klypaketle** script dosyasını **/bin/** konumuna oluşturnuz ve **chmod 755 /bin/klypaketle** komutuyla çalıştırma izni vermeliyiz. **kly** paket sistemi için yapılacak olan **bsppaketle, klyupdate, klykur, klykaldir** scriptlerinide **/bin/** konumunda oluşturulmalı veya kopyalanmalı ve çalıştırma izni verilmeli.
 

@@ -6,6 +6,8 @@ Dağıtım oluşturmak için kernel ve busybox dosyalarımızın olması yeterli
 
 Bu sistemi hazırlarken **chroot** ve **busybox** komutlarını  kullanarak sistemi hazırlayacağız ve test edeceğiz. **chroot** ve **busybox** kullanımı için dokümandanki ilgili konu başlığına bakınız.
 
+**Özet**
+--------
 Sistemimiz için aşağıdaki gibi bir yapı oluşturmalıyız. 
 
 1. $HOME/distro/rootfs/busybox
@@ -82,8 +84,8 @@ Aşağıdaki içerik oluşturulan **init** dosyası içine eklenir.
 
 .. code-block:: shell
 
-	#!busybox ash
-	PATH=/bin
+	#!/busybox ash
+	export PATH=/bin
 	/busybox mkdir /bin
 	/busybox --install -s /bin
 	/busybox ash
@@ -92,8 +94,8 @@ Aşağıdaki içerik oluşturulan **init** dosyası içine eklenir.
 
 Buradaki komutları sırayla anlatırsak;
 
-1. #!busybox ash: ash bir kabuk veya terminal programıdır.
-2. PATH=/bin: komutlar çalışırken nerede arayacağı belirtiliyor
+1. #!/busybox ash: ash bir kabuk veya terminal programıdır.
+2. export PATH=/bin: komutlar çalışırken nerede arayacağı belirtiliyor
 3. /busybox mkdir /bin: **busybox mkdir**  yardımıyla **/bin** dizini oluşturuluyor.
 4. /busybox --install -s /bin: **/bin** dizinine tüm komutları kısa yol oluşturur.
 5. /busybox ash: ash terminalini çalıştırır. Bash yerine alternatif.
@@ -114,9 +116,9 @@ initrd.img dosyası için aşağıdaki komutlar çalıştırılır
 .. code-block:: shell
 
 	cd $HOME/distro/rootfs
-	find ./ | cpio -H newc -o >$HOME/distro/iso/boot/initrd.img	
+	find ./ | cpio -H newc -o >../initrd.img
 
-Oluşturulan **initrd.img** dosyası çalışacak tty açacak(konsol elde etmiş olacağız). 
+Oluşturulan **initrd.img** dosyası çalışacak tty açacak(konsol elde etmiş olacağız).
 Aslında bu işlemi yapan şey **busybox** ikili dosyası.
 
 **$HOME/distro/iso/boot/vmlinuz**
@@ -162,11 +164,10 @@ Aşağıdaki komutla qemu ile isomuzu çalıştırıp test edebiliriz. qemu ile 
 
 	qemu-system-x86_64 -cdrom $HOME/distro/distro.iso -m 1G
 
-Eğer hatasız yapılmışsa sistem açılacak ve tty açacaktır. Birçok komutu çalışan bir dağıtım oluşturmuş olduk. Ekran görüntüsü aşağıda görülmektedir. 
+Eğer hatasız yapılmışsa sistem açılacak ve tty açacaktır. Birçok komutu çalışan bir dağıtım oluşturmuş olduk. Ekran görüntüsü aşağıda görülmektedir.
 
 .. image:: /_static/images/minimal-iso.png
   :width: 400
-
 
 
 Dokümanın devamında kendi sistemimizi hazırlarken bu bölümde anlatılan yapıya benzer adımları yapacağız. 
@@ -174,7 +175,7 @@ Minimal sistemden farkı **busybox** ile oluşturduğumuz ikili dosyalarımızı
 Minimal sistemde static busybox kullandık. 
 
 Static dosyalarda dosyanın çalışması için kütüphanelerin hepsi kendi içerisine gömümülü(dahil) bir şekilde gelir.
-Avantajı hiçbir kütüphaneye ihtiyaç duymaz. Devevantajı ise boyutları yüksek olur. İstisnalar olsada genel olarak static tercih edilmemektedir. Static olduğunda iso boyutlarımız olması gerekenden 5-10 kat fazla olabilmektedir.
+Avantajı hiçbir kütüphaneye ihtiyaç duymaz. Devevantajı ise boyutları yüksek olur. İstisnalar olsada genel olarak static tercih edilmemektedir. Static olduğunda iso boyutlarımız olması gerekenden fazla olabilmektedir.
 
 .. raw:: pdf
 

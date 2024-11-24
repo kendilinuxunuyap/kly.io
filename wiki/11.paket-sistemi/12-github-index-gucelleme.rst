@@ -31,15 +31,15 @@ Depo indexi paketlerin içinde yer alan paket bilgileri okunarak otomatik olarak
 
 .. code-block:: shell
 
-	function index {
+	index() {
 	    > index.txt
 	    for i in $@ ; do
 	        unzip -p $i build >> index.txt
 	        echo "Paket_Konumu: $i" >> index.txt
 	    done
 	}
-	
-	index t/test/test_2.0.zip b/bash/bash_1.0.zip
+
+	index t/test/test_2.0.zip b/bash/bash_1.0.zip ...
 
 Bu örnekte paketlerin içindeki paket bilgisi içeren dosyaları uç uca ekledik.
 Buna ek olarak paketin nerede olduğunu anlamak için paket konumunu da ekledik. Çıktısı aşağıdaki gibidir.
@@ -115,6 +115,7 @@ https://github.com/kendilinuxunuyap/kly-binary-packages/releases/download/curren
 
 main.yml
 --------
+Örnek bir github CI/CD yapılandırması aşağıda verilmiştir. İnceleyebilirsiniz :D
 
 .. code-block:: shell
 
@@ -123,8 +124,6 @@ main.yml
 	on:
 	  push:
 		branches: [ master ]
-	  schedule:
-		- cron: "0 0 1 2 6"
 
 	jobs:
 		compile:

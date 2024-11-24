@@ -3,7 +3,7 @@ meson
 
 Meson, ile ninja kullanılarak projeyi yapılandırarak derleyebilirsiniz. Derleme aşamaları aşağıda gösterilmiştir.
 
-Projenizin dizinine gidin ve aşağıdaki komutu çalıştırınız:
+Projenizin dizinne gidin ve aşağıdaki komutu çalıştırınız:
 
 .. code-block:: shell
 
@@ -21,13 +21,13 @@ Kullanımı
 Kaynak koddan aşağıdaki gibi derlenir:
 
 .. code-block:: shell
-	
-	# paketin yükleneceği konum
-	DESTDIR=/
+
+	# paketin yükleneceği konum (DESTDIR=/)
 	meson setup builddir --prefix=/usr
 	ninja -C builddir
-	DESTDIR=$DESTDIR ninja -C builddir install
-	
+	DESTDIR=/ ninja -C builddir install
+
+
 .. raw:: pdf
 
    PageBreak

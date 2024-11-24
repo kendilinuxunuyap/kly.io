@@ -10,7 +10,7 @@ SquashFS Oluşturma
 .. code-block:: shell
 
 	# mksquashfs input_source output/filesystem.squashfs -comp xz -wildcards 
-	mksquashfs initrd $HOME/distro/filesystem.squashfs -comp xz -wildcards
+	mksquashfs rootfs $HOME/distro/filesystem.squashfs -comp xz -wildcards
 
 
 Cdrom Erişimi

@@ -6,7 +6,7 @@ make, yazılım geliştirme süreçlerinde sıkça kullanılan bir araçtır. Ö
 Aşağıdaki C kodumuzu(merhaba.c dosyası) make ile nasıl derleyeceğimizi anlatalım;
 
 .. code-block:: C
-	
+
 	#include <stdio.h>
 	int main(){
 	    puts("Merhaba");
@@ -26,11 +26,14 @@ Makefile, make aracının nasıl çalışacağını belirten bir dosyadır. İç
 
 	all: program
 
-	program: merhaba.o 
+	program: merhaba.o
 		$(CC) -o program merhaba.o
 
 	merhaba.o: merhaba.c
 		$(CC) -c merhaba.c $(CFLAGS)
+
+	install:
+		install program $(DESDIR)/usr/bin/program
 
 	clean:
 		rm -f *.o program
@@ -58,8 +61,8 @@ Bu kaynak kod aşağıdaki gibi derlenir:
 	$ autoreconf -fvi
 	$ ./configure --prefix=/usr
 	$ make
-	$ make install 
-	
+	$ make install
+
 .. raw:: pdf
 
    PageBreak

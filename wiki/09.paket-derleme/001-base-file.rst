@@ -73,28 +73,29 @@ Yukarıdaki kodları standart bir yapıya dönüştürüp aşağıdaki şablon s
 	wget ${source}
 	dowloadfile=$(ls|head -1)
 	filetype=$(file -b --extension $dowloadfile|cut -d'/' -f1)
-	if [ "${filetype}" == "???" ]; then unzip  ${dowloadfile}; else tar -xvf ${dowloadfile};fi
+	if [ "${filetype}" == "???" ]; then
+	    unzip  ${dowloadfile}
+	else
+	    tar -xvf ${dowloadfile}
+	fi
 	director=$(find ./* -maxdepth 0 -type d)
 	directorname=$(basename ${director})
-	if [ "${directorname}" != "${name}-${version}" ]; then mv $directorname ${name}-${version};fi
+	if [ "${directorname}" != "${name}-${version}" ]; then
+	    mv $directorname ${name}-${version}
+	fi
 	# derleme dizini, yüklenecek konum dizini açılıyor ve derleme dizinine geçiliyor
-	mkdir -p $BUILDDIR&&mkdir -p $DESTDIR&&cd $BUILDDIR
-	# Paket derleme öncesi hazırlık
+	mkdir -p $BUILDDIR $DESTDIR
+	cd $BUILDDIR
+	# Paket derleme, derleme öncesi hazırlık, derleme sonrası yükleme ve ayarlar
 	# ...
-	# Paket derlenmesi
-	# ...
-	# paket derleme sonrası yükleme ve ayarlar
-	# ...
-
-
 
 Şablon içinde kullanılan bazı sabit bilgiler var. Bular;
 
 - ROOTBUILDDIR="/tmp/kly/build": Derleme konumu.
 - BUILDDIR="/tmp/kly/build/build-${name}-${version}": Derlenen paketin derleme konumu.
-- DESTDIR="$HOME/distro/rootfs": Derlennen paketin yükleneceği(tsarladığımız sistem) konum.
+- DESTDIR="$HOME/distro/rootfs": Derlennen paketin yükleneceği konum.
 - PACKAGEDIR=$(pwd) : Derleme talimatının bulunduğu(build dosyası) konum.
-- SOURCEDIR="/tmp/kly/build/${name}-${version}": Derlenen paketin kaynak kodlarının konumu.
+- SOURCEDIR="/tmp/kly/build/${name}-${version}": Derlenen kodlarının konumu.
 
 Derleme konumunu uzun uzun yazmak yerine sadece $ROOTBUILDDIR ifadesi kullanılıyor. Aslında bu işleme takma ad(alias) denir. Mesela kaynak kodların olduğu konumda bir şeyler yapmak istersek $SOURCEDIR ifadesinin kullanmamız yeterli olacaktır. Bu takma adlar tüm paketlerde geçerli olacak ifadelerdir.
 
@@ -102,8 +103,8 @@ Derleme konumunu uzun uzun yazmak yerine sadece $ROOTBUILDDIR ifadesi kullanıl�
 
    PageBreak
    
-Şablon Script(base-file)
-------------------------
+Şablon Script ile yapılmış örnek (base-file)
+--------------------------------------------
 
 .. code-block:: shell
 
@@ -113,7 +114,6 @@ Derleme konumunu uzun uzun yazmak yerine sadece $ROOTBUILDDIR ifadesi kullanıl�
 	depends=""
 	description="sistemin temel yapısı"
 	source=""
-	groups="sys.base"
 
 	# Paketin yükleneceği tasarlanan sistem konumu
 	DESTDIR="$HOME/distro/rootfs"
@@ -126,7 +126,6 @@ Derleme konumunu uzun uzun yazmak yerine sadece $ROOTBUILDDIR ifadesi kullanıl�
 	# Paketin kaynak kodlarının olduğu konum
 	SOURCEDIR="/tmp/kly/build/${name}-${version}" 
 	
-
 	# initsetup 
 	mkdir -p  $ROOTBUILDDIR #derleme dizini yoksa oluşturuluyor
 	rm -rf $ROOTBUILDDIR/* #içeriği temizleniyor
